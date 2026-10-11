@@ -2,17 +2,16 @@
   "observed_on": "2026-10-12",
   "version": "comparison-v1",
   "title": "钱学森这条，具体能和意公子对照什么？",
-  "relation_status": "本轮研究后建立的方法对照；已核当前作品的相似处理，未取得最初写稿时逐项参考意公子的创作记录。",
-  "qian_version": "钱学森试作：本节核对v8纯白双语画面与时码；制作方正在整合的v9仅更换配乐，文案与时码沿用",
+  "relation_status": "已核现行作品的相似处理；未取得最初写稿时的参考记录。",
+  "qian_version": "对照依据为v8画面与字幕时码；v9仅换配乐，时码沿用",
   "qian_duration_seconds": 179.051,
   "qian_public_video_url": null,
   "qian_voice_mix_sha256": "27e37c69b173d5cd0d4201646f4f33ea90338f0a1553290d50c20e3eba387bc4",
   "qian_video_sha256": "334ea5f719c16b6fa6c8d1d713ec07772798b67bcbc9b3a4ffe1bf856d739a42",
-  "scope": "意公子原片以已有完整音频转写和结构分析定位，链接时间点为近似定位，未完整审读画面。钱学森以现行中文稿、52条双语字幕和v8成片定帧核对；时码供课堂播放本片时查找。此处不是声线、配乐或剪辑节奏模仿的结论。",
+  "scope": "意公子依据完整音频转写与结构分析，时间点为近似定位，未完整审读画面。钱学森核对现行中文稿、52条字幕与v8成片定帧；时码用于片段定位，不判断声线、配乐或剪辑节奏模仿。",
   "design_reference": "字幕视觉另参考 DRAKSTREET《为何他一人就能改写国运？》；本节不把字体或配乐归为意公子参考。",
   "design_reference_url": "https://www.douyin.com/video/7691385246863871251",
-  "answer": "我用意公子的作品复盘钱学森这条，能对照四点：先让人物开口，用一个问题串经历，用计算尺这样的细节说明育人，最后回到自己的责任。原声、留下什么、计算尺和结尾自问，都有对应段落。这是对现有作品的方法复盘，不倒推最初每一步都照着她做；字体另有参考。",
-  "answer_seconds_estimate": "约30—35秒，按每秒4—5字估算；不是已测实录时长。",
+  "answer": "现行作品可对照四项处理：人物原声开场，以“留下什么”串联经历，用计算尺细节说明育人，最后回到自己的责任。这是事后方法分析，未取得最初创作来源的记录；字幕视觉另有参考。",
   "items": [
     {
       "id": "opening",
@@ -119,5 +118,6 @@
   ],
   "qian_video_verified_version": "v8",
   "qian_production_update": "2026-10-12制作负责人同步：正在整合v9，只替换配乐；本研究未核v9导出成片，时码沿用已核v8。",
-  "qian_timing_source_version": "v8字幕，沿用v7时码"
+  "qian_timing_source_version": "v8字幕，沿用v7时码",
+  "answer_character_count": 83
 }

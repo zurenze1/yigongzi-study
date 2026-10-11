@@ -829,10 +829,11 @@
       "title": "如果你也曾在大量杂音之中，对自己有过犹豫或是瞬间的自我怀疑，希望这期访谈可以带给你一些启发。",
       "url": "https://www.douyin.com/video/7690923482732842278",
       "original_url_verified": true,
-      "published_at": null,
-      "published_at_origin": null,
+      "published_at": "2026-09-29 19:51",
+      "published_at_origin": "飞瓜可见列表",
       "source_ids": [
-        "D01"
+        "D01",
+        "FG01"
       ],
       "series": "访谈",
       "reading": {
@@ -889,10 +890,11 @@
       "title": "我去了趟济南，记住的不只是泉水，还有一句：滴水之恩，涌泉相报。善意是会流动的，你给出的一滴水，终会流回到你身边。",
       "url": "https://www.douyin.com/video/7690795374860094746",
       "original_url_verified": true,
-      "published_at": null,
-      "published_at_origin": null,
+      "published_at": "2026-09-30 12:01",
+      "published_at_origin": "飞瓜可见列表",
       "source_ids": [
-        "D01"
+        "D01",
+        "FG01"
       ],
       "series": "其他公开内容",
       "reading": {
@@ -909,10 +911,11 @@
       "title": "一场两个小时的访谈，我们总共讲了76次“相信”。王潮歌导演饱满的生命能量，究竟从何而来？",
       "url": "https://www.douyin.com/video/7690523831441689891",
       "original_url_verified": true,
-      "published_at": null,
-      "published_at_origin": null,
+      "published_at": "2026-09-28 18:00",
+      "published_at_origin": "飞瓜可见列表",
       "source_ids": [
-        "D01"
+        "D01",
+        "FG01"
       ],
       "series": "访谈",
       "reading": {
@@ -929,10 +932,11 @@
       "title": "无前置文案／仅话题卡片",
       "url": "https://www.douyin.com/video/7690409484400774451",
       "original_url_verified": true,
-      "published_at": null,
-      "published_at_origin": null,
+      "published_at": "2026-09-28 12:37",
+      "published_at_origin": "飞瓜可见列表",
       "source_ids": [
-        "D01"
+        "D01",
+        "FG01"
       ],
       "series": "我们的来处",
       "reading": {
@@ -10355,7 +10359,7 @@ $('timeline').innerHTML=milestones.map(([y,t,b,s])=>`<div class="milestone"><spa
 $('facts').innerHTML=DATA.claims.filter(x=>x.id!=='A01').map(c=>`<details><summary><span class="label ${c.status==='disputed'?'warn':''}">${statusName[c.status]}</span>${esc(c.text)}</summary><p>${esc(c.limits)}</p>${evidence(c.source_ids)}</details>`).join('');
 Object.entries(DATA.series_counts).sort((a,b)=>b[1]-a[1]).forEach(([s,n])=>{const o=document.createElement('option');o.value=o.textContent=s;$('seriesFilter').append(o);const b=document.createElement('button');b.textContent=`${s} ${n}`;b.onclick=()=>{$('seriesFilter').value=s;$('platformFilter').value='抖音';page=1;renderWorks()};$('seriesBars').append(b)});
 let page=1;const pageSize=24;let filtered=[];
-function renderWorks(){const q=$('search').value.trim().toLowerCase();filtered=DATA.works.filter(w=>(!q||(w.title+' '+(w.caption||'')).toLowerCase().includes(q))&&(!$('platformFilter').value||w.platform===$('platformFilter').value)&&(!$('seriesFilter').value||w.series===$('seriesFilter').value)&&(!$('depthFilter').value||w.reading.level===$('depthFilter').value));const pages=Math.max(1,Math.ceil(filtered.length/pageSize));page=Math.min(page,pages);$('catalogCount').textContent=`找到 ${filtered.length} 条 · 全部366条记录（主号361＋B站5）`;$('workGrid').innerHTML=filtered.slice((page-1)*pageSize,page*pageSize).map(w=>`<article class="work-card"><div><span class="label">${esc(w.platform)}</span><span class="small">${esc(w.series)}</span></div><h3>${esc(w.title)}</h3><span class="small">${w.published_at?esc(w.published_at.slice(0,10))+(w.published_at_origin?' · 复用旧核验':''):'发布日期未核'} · ${w.reading.level==='audio_complete'?'完整音频分析':'仅目录'}</span><a class="work-link" href="${esc(w.url)}" target="_blank" rel="noopener">${w.original_url_verified?'打开已核原片 ↗':'去主号查找 · 原片链接待核 ↗'}</a></article>`).join('')||'<p>没有匹配的作品，请换一个关键词。</p>';$('pageLabel').textContent=`${page} / ${pages}`;$('prevPage').disabled=page<=1;$('nextPage').disabled=page>=pages;}
+function renderWorks(){const q=$('search').value.trim().toLowerCase();filtered=DATA.works.filter(w=>(!q||(w.title+' '+(w.caption||'')).toLowerCase().includes(q))&&(!$('platformFilter').value||w.platform===$('platformFilter').value)&&(!$('seriesFilter').value||w.series===$('seriesFilter').value)&&(!$('depthFilter').value||w.reading.level===$('depthFilter').value));const pages=Math.max(1,Math.ceil(filtered.length/pageSize));page=Math.min(page,pages);$('catalogCount').textContent=`找到 ${filtered.length} 条 · 全部366条记录（主号361＋B站5）`;$('workGrid').innerHTML=filtered.slice((page-1)*pageSize,page*pageSize).map(w=>`<article class="work-card"><div><span class="label">${esc(w.platform)}</span><span class="small">${esc(w.series)}</span></div><h3>${esc(w.title)}</h3><span class="small">${w.published_at?esc(w.published_at.slice(0,10))+(w.published_at_origin?(w.published_at_origin==='飞瓜可见列表'?' · 飞瓜列表':' · 复用旧核验'):''):'发布日期未核'} · ${w.reading.level==='audio_complete'?'完整音频分析':'仅目录'}</span><a class="work-link" href="${esc(w.url)}" target="_blank" rel="noopener">${w.original_url_verified?'打开已核原片 ↗':'去主号查找 · 原片链接待核 ↗'}</a></article>`).join('')||'<p>没有匹配的作品，请换一个关键词。</p>';$('pageLabel').textContent=`${page} / ${pages}`;$('prevPage').disabled=page<=1;$('nextPage').disabled=page>=pages;}
 ['search','platformFilter','seriesFilter','depthFilter'].forEach(id=>$(id).addEventListener(id==='search'?'input':'change',()=>{page=1;renderWorks()}));$('resetFilters').onclick=()=>{['search','platformFilter','seriesFilter','depthFilter'].forEach(id=>$(id).value='');page=1;renderWorks()};$('prevPage').onclick=()=>{page--;renderWorks()};$('nextPage').onclick=()=>{page++;renderWorks()};renderWorks();
 function atTime(url,time){const [m,s]=time.split(':').map(Number);return url+'?t='+(m*60+s)}
 function renderCase(i){const c=DATA.cases[i],w=DATA.works.find(w=>w.id===c.work_id);[...$('caseTabs').children].forEach((b,n)=>{b.setAttribute('aria-selected',String(i===n));b.tabIndex=i===n?0:-1});$('casePanel').setAttribute('aria-labelledby','caseTab'+i);$('casePanel').innerHTML=`<div class="case-layout"><div><span class="label">研究分析</span><h3>${esc(c.title)}</h3><p class="case-desc">${esc(c.question)}</p><div class="case-meta"><span>${w.published_at.slice(0,10)}</span><span>${Math.floor(w.reading.duration_seconds/60)}分${w.reading.duration_seconds%60}秒</span><span>完整音频 · 画面待补</span></div><p>${esc(c.thesis)}</p><p class="small">B站读取时：播放${w.metrics.view.toLocaleString()} · 点赞${w.metrics.like.toLocaleString()} · 收藏${w.metrics.favorite.toLocaleString()}。仅本样本当时指标，不能代替抖音表现或全号留存。</p><a href="${esc(w.url)}" target="_blank" rel="noopener">回原片核对 ↗</a>　${evidence(c.source_ids)}</div><ol class="nodes">${c.nodes.map(([tm,t,b])=>`<li><a href="${esc(atTime(w.url,tm))}" target="_blank" rel="noopener" aria-label="原片${tm} ${esc(t)}">${tm} ↗</a><div><b>${esc(t)}</b><p>${esc(b)}</p></div></li>`).join('')}</ol></div><div class="analysis-pairs">${[['机制',c.mechanism],['证据边界与批评',c.limits],['可迁移动作',c.transfer],['失效条件',c.counter]].map(([t,b])=>`<div class="analysis-box"><h4>${t}</h4><p>${esc(b)}</p></div>`).join('')}</div><div class="note"><b>最小测试：</b>${esc(c.test)}</div>`;}

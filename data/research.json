@@ -10329,7 +10329,7 @@
     "version": "comparison-v1",
     "title": "钱学森这条，具体能和意公子对照什么？",
     "relation_status": "本轮研究后建立的方法对照；已核当前作品的相似处理，未取得最初写稿时逐项参考意公子的创作记录。",
-    "qian_version": "钱学森试作 v8：纯白双语字幕；中文稿、旁白与时码沿用 v7",
+    "qian_version": "钱学森试作：本节核对v8纯白双语画面与时码；制作方正在整合的v9仅更换配乐，文案与时码沿用",
     "qian_duration_seconds": 179.051,
     "qian_public_video_url": null,
     "qian_voice_mix_sha256": "27e37c69b173d5cd0d4201646f4f33ea90338f0a1553290d50c20e3eba387bc4",
@@ -10443,6 +10443,8 @@
         "next_step": "计划补一个愿意公开、真实发生的责任场景，使自问更具体；当前只有反思，没有这段新故事。"
       }
     ],
-    "answer_character_count": 120
+    "qian_video_verified_version": "v8",
+    "qian_production_update": "2026-10-12制作负责人同步：正在整合v9，只替换配乐；本研究未核v9导出成片，时码沿用已核v8。",
+    "qian_timing_source_version": "v8字幕，沿用v7时码"
   }
 }

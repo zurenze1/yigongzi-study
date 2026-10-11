@@ -1,0 +1,46 @@
+[
+  {
+    "id": "P01",
+    "source_id": "N02",
+    "source_page_url": "https://zgxwfb.cn/2026/03/27/0c6f33d21c80439588a18a7f5a41a55f.html",
+    "image_url": "https://zgxwfb.cn/r/zgxwfb/images/cms/content/2026/05/2026%E5%B9%B4%E4%B8%A4%E4%BC%9A.jpeg",
+    "title": "吴敏婕在全国两会文艺界联组会上发言（高清）",
+    "publisher": "《中国新闻发布》／五洲期刊中心",
+    "identity_basis": "原页图注明确标注全国政协委员吴敏婕；同图在人民政协网S03明确说明其为2026年两会文艺界联组会发言，图片由受访者提供；画面桌牌可见吴敏婕。",
+    "source_publication_date": null,
+    "image_event_date": "2026年全国两会期间；具体拍摄日未标"
+  },
+  {
+    "id": "P02",
+    "source_id": "N02",
+    "source_page_url": "https://zgxwfb.cn/2026/03/27/0c6f33d21c80439588a18a7f5a41a55f.html",
+    "image_url": "https://zgxwfb.cn/r/zgxwfb/images/cms/content/2026/05/%E6%97%A5%E5%B8%B8%E6%A3%9A%E6%8B%8D.png",
+    "title": "意公子绿衣口播节目截图",
+    "publisher": "《中国新闻发布》／五洲期刊中心",
+    "identity_basis": "原页图注明确标注吴敏婕（意公子）的视频节目截图；依据采访机构图注确认，未靠图片搜索或相貌识别。",
+    "source_publication_date": null,
+    "image_event_date": null
+  },
+  {
+    "id": "P04",
+    "source_id": "N07",
+    "source_page_url": "https://m.jfdaily.com/wx/detail.do?id=861882",
+    "image_url": "https://images.shobserver.com/img/2025/02/18/l_CB20250218143102021042.jpg",
+    "title": "意公子在《人生得遇苏东坡》新书活动中朗读",
+    "publisher": "上观新闻／文汇报",
+    "identity_basis": "原报道配图图注明确写意公子；正文记载本人2月15日在上海钟书阁举办首发会；画面背景为该书首发活动标识。",
+    "source_publication_date": "2025-02-18",
+    "image_event_date": "2025-02-15"
+  },
+  {
+    "id": "P05",
+    "source_id": "S09",
+    "source_page_url": "https://www.suncolor.com.tw/BookPage.aspx?bokno=105020114002",
+    "image_url": "https://www.suncolor.com.tw/imageapi/images/w1000/105020114002.jpg?w=650&quality=100",
+    "title": "《人生得遇蘇東坡》三采繁体限量版商品图",
+    "publisher": "三采文化",
+    "identity_basis": "出版社原页明确列作者意公子，作者简介说明本名吴敏婕；图片对应该页BookPic商品主图，封面有作者名与本人照片。",
+    "source_publication_date": null,
+    "image_event_date": null
+  }
+]

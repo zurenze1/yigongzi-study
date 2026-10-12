@@ -42,5 +42,27 @@
     "identity_basis": "出版社原页明确列作者意公子，作者简介说明本名吴敏婕；图片对应该页BookPic商品主图，封面有作者名与本人照片。",
     "source_publication_date": null,
     "image_event_date": null
+  },
+  {
+    "id": "P06",
+    "source_id": "N07",
+    "source_page_url": "https://m.jfdaily.com/wx/detail.do?id=861882",
+    "image_url": "https://images.shobserver.com/img/2025/02/18/l_CB20250218143102144040.jpg",
+    "publisher": "上观新闻／文汇报",
+    "identity_basis": "原报道正文及原图注，未使用相貌识别",
+    "event_date": "2025-02-15",
+    "title": "意公子向读者分享海报中留言。",
+    "source_publication_date": "2025-02-18"
+  },
+  {
+    "id": "P08",
+    "source_id": "N07",
+    "source_page_url": "https://m.jfdaily.com/wx/detail.do?id=861882",
+    "image_url": "https://images.shobserver.com/img/2025/02/18/l_CB20250218143101577046.jpg",
+    "publisher": "上观新闻／文汇报",
+    "identity_basis": "原报道记载意公子的新书首发会并将该图标为首发会现场，不以相貌识别推定参与者身份",
+    "event_date": "2025-02-15",
+    "title": "《人生得遇苏东坡》新书首发会现场合影",
+    "source_publication_date": "2025-02-18"
   }
 ]

@@ -383,16 +383,15 @@ body.paused .season-pane{animation-play-state:paused!important;transition:none!i
 @media(max-width:620px){.creator-hero .hero-inner{grid-template-columns:minmax(0,1fr);row-gap:16px}.creator-cover-photo{max-width:none;width:calc(100% + 65px);height:340px;justify-self:center;margin:-5px -30px -25px;grid-row:3}.creator-cover-photo img{object-fit:contain;object-position:center bottom}.creator-cover-photo figcaption{bottom:17px;right:20px;font-size:9px}.creator-hero:before{width:160px;height:350px;right:-100px;top:200px}.creator-video-layout{grid-template-columns:minmax(0,1fr);gap:22px}.creator-video-copy:after{display:none}.creator-video-copy{padding:0}.creator-video-copy h2{font-size:31px;margin-bottom:20px}.creator-video-copy .editorial{font-size:22px}.creator-video-section .hero-video-surface{width:min(310px,100%)}.creator-video-section{padding:51px 0 57px}.ambience-volume input{width:80px}}
 
 /*
- * Integration: load AFTER poster.css / the final inline poster rules.
- * Replace only the original <img> inside .creator-cover-photo with the
- * .portrait-presence block from portrait-breeze-snippet.html.
- * Keep the existing figure and figcaption. The caption never animates.
+ * Load after poster.css. Replace the complete old .portrait-presence block
+ * with the new snippet, then load portrait-wind.js after the site's scripts.
+ * The figure's dimensions and any existing caption stay owned by the site.
  *
- * All three visible image references use the existing 1506 × 1044 WebP.
- * The original image stays complete. Decorative copies affect only inset
- * hair / fabric texture: masks stay inside the silhouette, so they cannot
- * create a second outer edge or overlay eyes, lips, skin, or hands.
- * This is restrained photo parallax, not newly generated expressions.
+ * Active motion renders ONE filtered copy of the unchanged source photo.
+ * The accessible original is opacity:0 while active (keeps its alt in the
+ * accessibility tree), and is the sole visible photo in every static state.
+ * The SVG displacement fields extend across hair/cloth silhouettes. There
+ * is no static photo beneath an offset decorative copy to cause two edges.
  */
 
 .creator-cover-photo .portrait-presence {
@@ -403,24 +402,21 @@ body.paused .season-pane{animation-play-state:paused!important;transition:none!i
   pointer-events: none;
   transform: none;
   transform-origin: 56% 88%;
-  animation: portrait-presence-breathe 11.8s ease-in-out infinite;
-  will-change: transform;
+  animation: none !important;
 }
 
-/* Preserve poster.css's existing image geometry and its single shadow.
- * The wrapper has precisely the same bounds as the original figure.
- * The original image's width, left, top, object-fit and fade are inherited.
- */
+/* Retain poster.css geometry / object-fit and the existing original shadow. */
 .creator-cover-photo .portrait-presence > .portrait-source {
   z-index: 0;
   display: block;
-  animation: none;
-  transform: none;
+  opacity: 1;
+  animation: none !important;
+  transform: none !important;
+  transition: none !important;
 }
 
-/* SVG viewBox and xMidYMax meet mirror object-fit:contain / center bottom.
- * These geometry values are copied from the current poster.css img rule.
- * If that rule changes, change this overlay geometry to match it exactly.
+/* Match the source img box exactly; viewBox meet = contain / center bottom.
+ * If poster.css changes those img values, update this geometry with it.
  */
 .creator-cover-photo .portrait-breeze-overlay {
   position: absolute;
@@ -433,67 +429,41 @@ body.paused .season-pane{animation-play-state:paused!important;transition:none!i
   height: calc(100% + 30px);
   z-index: 1;
   display: block;
-  overflow: hidden;
+  visibility: hidden;
+  overflow: visible;
   pointer-events: none;
   user-select: none;
-  filter: none;
+  filter: drop-shadow(-10px 7px 20px #081e1570);
   mask-image: linear-gradient(#000 78%, transparent);
   -webkit-mask-image: linear-gradient(#000 78%, transparent);
+  animation: none !important;
+  transition: none !important;
 }
 
-.portrait-breeze-overlay .portrait-hair-motion,
-.portrait-breeze-overlay .portrait-cloth-motion {
-  transform-box: view-box;
-  transform: none;
+.creator-cover-photo .portrait-presence.portrait-wind-running {
   will-change: transform;
 }
 
-.portrait-breeze-overlay .portrait-hair-motion {
-  transform-origin: 620px 370px;
-  animation: portrait-hair-breeze 7.9s ease-in-out infinite;
+.creator-cover-photo .portrait-wind-running > .portrait-source {
+  opacity: 0;
 }
 
-.portrait-breeze-overlay .portrait-cloth-motion {
-  transform-origin: 808px 694px;
-  animation: portrait-cloth-breeze 9.7s ease-in-out infinite;
+.creator-cover-photo .portrait-wind-running > .portrait-breeze-overlay {
+  visibility: visible;
 }
 
-/* Whole photograph: under 1px drift plus a tiny rigid pose tilt.
- * The face's pixels move together; no face warp / mouth / eye animation.
+/* JS also cancels its RAF and zeroes the SVG scales. CSS handles the pause
+ * immediately, even before the body class observer runs. Complete original,
+ * zero pose transform, no frozen warped contour. No fade between copies.
  */
-@keyframes portrait-presence-breathe {
-  0%, 100% { transform: none; }
-  34% { transform: translate3d(.25px, -.45px, 0) rotate(-.025deg) scaleY(1.0007); }
-  72% { transform: translate3d(-.2px, .2px, 0) rotate(.018deg); }
-}
-
-/* SVG values are source-space units. At the current desktop width,
- * 2.6 source units render at roughly 1.2 CSS px; smaller on mobile.
- * The stationary outer mask limits the copy to hair's interior tips.
- */
-@keyframes portrait-hair-breeze {
-  0%, 100% { transform: none; }
-  29% { transform: translate(2.6px, -.6px) rotate(.025deg); }
-  57% { transform: translate(.7px, .35px) rotate(-.012deg); }
-  81% { transform: translate(-1.7px, -.3px) rotate(-.018deg); }
-}
-
-@keyframes portrait-cloth-breeze {
-  0%, 100% { transform: none; }
-  38% { transform: translate(2.2px, -.8px) skewX(.035deg); }
-  74% { transform: translate(-1.4px, .65px) skewX(-.025deg); }
-}
-
-/* Explicitly RESET, rather than merely freeze at a displaced animation
- * frame. These rules override the page's generic paused play-state rule.
- */
-body.paused .creator-cover-photo .portrait-presence,
-body.paused .portrait-breeze-overlay .portrait-hair-motion,
-body.paused .portrait-breeze-overlay .portrait-cloth-motion {
-  animation: none !important;
-  animation-play-state: paused !important;
+body.paused .creator-cover-photo .portrait-presence {
   transform: none !important;
+  animation: none !important;
   will-change: auto !important;
+}
+
+body.paused .creator-cover-photo .portrait-presence > .portrait-source {
+  opacity: 1 !important;
 }
 
 body.paused .creator-cover-photo .portrait-breeze-overlay {
@@ -501,13 +471,14 @@ body.paused .creator-cover-photo .portrait-breeze-overlay {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .creator-cover-photo .portrait-presence,
-  .portrait-breeze-overlay .portrait-hair-motion,
-  .portrait-breeze-overlay .portrait-cloth-motion {
-    animation: none !important;
-    animation-play-state: paused !important;
+  .creator-cover-photo .portrait-presence {
     transform: none !important;
+    animation: none !important;
     will-change: auto !important;
+  }
+
+  .creator-cover-photo .portrait-presence > .portrait-source {
+    opacity: 1 !important;
   }
 
   .creator-cover-photo .portrait-breeze-overlay {
@@ -572,82 +543,67 @@ body.paused .creator-cover-photo .portrait-breeze-overlay {
 </g></g><g class="bamboo-leaf-wind"><g fill="none" stroke="#31563e" stroke-width="1.2" stroke-linecap="round" opacity=".76">
 <path d="M25 366Q89 302 183 293M45 347Q-8 279-54 271M95 528Q153 487 283 503M103 680Q151 622 251 623M161 616Q105 553 12 556M223 789Q276 732 343 718M173 788Q83 742 10 756"/>
 </g><g fill="#31563e" opacity=".7"><g transform="translate(58 337) rotate(-37) scale(0.9)"><use href="#introBambooLeaf"/><use href="#introBambooLeaf" transform="rotate(-39) scale(.78)"/><use href="#introBambooLeaf" transform="rotate(43) scale(.85)"/></g><g transform="translate(82 319) rotate(-29) scale(1)"><use href="#introBambooLeaf"/><use href="#introBambooLeaf" transform="rotate(-39) scale(.78)"/><use href="#introBambooLeaf" transform="rotate(43) scale(.85)"/></g><g transform="translate(118 304) rotate(-21) scale(0.86)"><use href="#introBambooLeaf"/><use href="#introBambooLeaf" transform="rotate(-39) scale(.78)"/><use href="#introBambooLeaf" transform="rotate(43) scale(.85)"/></g><g transform="translate(160 297) rotate(-9) scale(0.75)"><use href="#introBambooLeaf"/><use href="#introBambooLeaf" transform="rotate(-39) scale(.78)"/><use href="#introBambooLeaf" transform="rotate(43) scale(.85)"/></g><g transform="translate(28 318) rotate(-134) scale(0.86)"><use href="#introBambooLeaf"/><use href="#introBambooLeaf" transform="rotate(-39) scale(.78)"/><use href="#introBambooLeaf" transform="rotate(43) scale(.85)"/></g><g transform="translate(9 298) rotate(-144) scale(0.9)"><use href="#introBambooLeaf"/><use href="#introBambooLeaf" transform="rotate(-39) scale(.78)"/><use href="#introBambooLeaf" transform="rotate(43) scale(.85)"/></g><g transform="translate(-16 283) rotate(-154) scale(0.74)"><use href="#introBambooLeaf"/><use href="#introBambooLeaf" transform="rotate(-39) scale(.78)"/><use href="#introBambooLeaf" transform="rotate(43) scale(.85)"/></g><g transform="translate(127 511) rotate(-24) scale(1.04)"><use href="#introBambooLeaf"/><use href="#introBambooLeaf" transform="rotate(-39) scale(.78)"/><use href="#introBambooLeaf" transform="rotate(43) scale(.85)"/></g><g transform="translate(168 499) rotate(-5) scale(1)"><use href="#introBambooLeaf"/><use href="#introBambooLeaf" transform="rotate(-39) scale(.78)"/><use href="#introBambooLeaf" transform="rotate(43) scale(.85)"/></g><g transform="translate(212 496) rotate(7) scale(0.88)"><use href="#introBambooLeaf"/><use href="#introBambooLeaf" transform="rotate(-39) scale(.78)"/><use href="#introBambooLeaf" transform="rotate(43) scale(.85)"/></g><g transform="translate(253 500) rotate(16) scale(0.75)"><use href="#introBambooLeaf"/><use href="#introBambooLeaf" transform="rotate(-39) scale(.78)"/><use href="#introBambooLeaf" transform="rotate(43) scale(.85)"/></g><g transform="translate(125 654) rotate(-42) scale(0.94)"><use href="#introBambooLeaf"/><use href="#introBambooLeaf" transform="rotate(-39) scale(.78)"/><use href="#introBambooLeaf" transform="rotate(43) scale(.85)"/></g><g transform="translate(161 635) rotate(-23) scale(0.86)"><use href="#introBambooLeaf"/><use href="#introBambooLeaf" transform="rotate(-39) scale(.78)"/><use href="#introBambooLeaf" transform="rotate(43) scale(.85)"/></g><g transform="translate(203 625) rotate(-3) scale(0.82)"><use href="#introBambooLeaf"/><use href="#introBambooLeaf" transform="rotate(-39) scale(.78)"/><use href="#introBambooLeaf" transform="rotate(43) scale(.85)"/></g><g transform="translate(127 581) rotate(-143) scale(0.92)"><use href="#introBambooLeaf"/><use href="#introBambooLeaf" transform="rotate(-39) scale(.78)"/><use href="#introBambooLeaf" transform="rotate(43) scale(.85)"/></g><g transform="translate(85 562) rotate(-167) scale(0.8)"><use href="#introBambooLeaf"/><use href="#introBambooLeaf" transform="rotate(-39) scale(.78)"/><use href="#introBambooLeaf" transform="rotate(43) scale(.85)"/></g><g transform="translate(46 557) rotate(-174) scale(0.75)"><use href="#introBambooLeaf"/><use href="#introBambooLeaf" transform="rotate(-39) scale(.78)"/><use href="#introBambooLeaf" transform="rotate(43) scale(.85)"/></g><g transform="translate(246 760) rotate(-42) scale(0.93)"><use href="#introBambooLeaf"/><use href="#introBambooLeaf" transform="rotate(-39) scale(.78)"/><use href="#introBambooLeaf" transform="rotate(43) scale(.85)"/></g><g transform="translate(279 737) rotate(-24) scale(0.82)"><use href="#introBambooLeaf"/><use href="#introBambooLeaf" transform="rotate(-39) scale(.78)"/><use href="#introBambooLeaf" transform="rotate(43) scale(.85)"/></g><g transform="translate(314 726) rotate(-7) scale(0.72)"><use href="#introBambooLeaf"/><use href="#introBambooLeaf" transform="rotate(-39) scale(.78)"/><use href="#introBambooLeaf" transform="rotate(43) scale(.85)"/></g><g transform="translate(135 774) rotate(-153) scale(0.92)"><use href="#introBambooLeaf"/><use href="#introBambooLeaf" transform="rotate(-39) scale(.78)"/><use href="#introBambooLeaf" transform="rotate(43) scale(.85)"/></g><g transform="translate(88 757) rotate(-170) scale(0.82)"><use href="#introBambooLeaf"/><use href="#introBambooLeaf" transform="rotate(-39) scale(.78)"/><use href="#introBambooLeaf" transform="rotate(43) scale(.85)"/></g><g transform="translate(44 754) rotate(-187) scale(0.7)"><use href="#introBambooLeaf"/><use href="#introBambooLeaf" transform="rotate(-39) scale(.78)"/><use href="#introBambooLeaf" transform="rotate(43) scale(.85)"/></g></g></g></g></g></svg>
-<div class="intro-author">祖仁泽 · 内容策划作品集</div><canvas id="introWeather" class="weather-canvas" aria-hidden="true"></canvas><canvas id="introLeaves" class="weather-canvas" aria-hidden="true"></canvas><div class="window-gate window-gate-left"></div><div class="window-gate window-gate-right"></div><div class="portal-rail portal-rail-top"></div><div class="portal-rail portal-rail-bottom"></div><div class="living-bamboo living-bamboo-left" aria-hidden="true"><div class="bamboo-layer far"><img src="images/bamboo-real-v3.webp" alt="" width="1145" height="1374" decoding="async"></div><div class="bamboo-layer near"><img src="images/bamboo-real-v3.webp" alt="" width="1145" height="1374" decoding="async"></div></div><div class="living-bamboo living-bamboo-right" aria-hidden="true"><div class="bamboo-layer far"><img src="images/bamboo-real-v3.webp" alt="" width="1145" height="1374" decoding="async"></div><div class="bamboo-layer near"><img src="images/bamboo-real-v3.webp" alt="" width="1145" height="1374" decoding="async"></div></div><div class="intro-mist"></div><button id="startSoundIntro" class="intro-sound-start">开启声音 · 重看入场</button><div class="ink-wordmark"><h2 class="intro-title ink-name">意公子</h2><p class="ink-subtitle">从故事，走进生活。</p></div>
+<div class="intro-author">祖仁泽 · 内容策划作品集</div><canvas id="introWeather" class="weather-canvas" aria-hidden="true"></canvas><canvas id="introLeaves" class="weather-canvas" aria-hidden="true"></canvas><div class="window-gate window-gate-left"></div><div class="window-gate window-gate-right"></div><div class="portal-rail portal-rail-top"></div><div class="portal-rail portal-rail-bottom"></div><div class="living-bamboo living-bamboo-left" aria-hidden="true"><div class="bamboo-layer far"><img src="images/bamboo-real-v3.webp" alt="" width="1145" height="1374" decoding="async"></div><div class="bamboo-layer near"><img src="images/bamboo-real-v3.webp" alt="" width="1145" height="1374" decoding="async"></div></div><div class="living-bamboo living-bamboo-right" aria-hidden="true"><div class="bamboo-layer far"><img src="images/bamboo-real-v3.webp" alt="" width="1145" height="1374" decoding="async"></div><div class="bamboo-layer near"><img src="images/bamboo-real-v3.webp" alt="" width="1145" height="1374" decoding="async"></div></div><div class="intro-mist"></div><button id="startSoundIntro" class="intro-sound-start">重看有声入场</button><div class="ink-wordmark"><h2 class="intro-title ink-name">意公子</h2><p class="ink-subtitle">从故事，走进生活。</p></div>
 <button id="skipIntro">进入研究 →</button>
 <noscript><style>#intro{display:none}</style></noscript>
 </div>
-<header class="top"><a class="brand" href="#top">意公子</a><nav aria-label="创作者与项目交付章节"><a href="#profile">档案</a><a href="#audience">画像</a><a href="#business">产品</a><a href="#methods">方法</a><a href="#proposal">交付</a></nav><div class="top-controls"><button class="sound-toggle" data-sound-toggle aria-pressed="false">开启环境声</button><button class="motion" id="motionToggle" aria-pressed="false">暂停动态</button></div><div class="progress" id="progress"></div></header>
-<canvas id="pageLeaves" class="page-leaves" aria-hidden="true"></canvas><main id="top" data-version="portfolio-v5-portrait-deliverables">
+<header class="top"><a class="brand" href="#top">意公子</a><nav aria-label="创作者与项目交付章节"><a href="#profile">档案</a><a href="#audience">画像</a><a href="#business">产品</a><a href="#methods">方法</a><a href="#proposal">交付</a></nav><div class="top-controls"><button class="sound-toggle" data-sound-toggle aria-pressed="true">关闭环境声</button><button class="motion" id="motionToggle" aria-pressed="false">暂停动态</button></div><div class="progress" id="progress"></div></header>
+<canvas id="pageLeaves" class="page-leaves" aria-hidden="true"></canvas><main id="top" data-version="portfolio-v6-wind-default-sound">
 <section class="hero hero-editorial creator-hero"><div class="hero-atmosphere" aria-hidden="true"></div><div class="hero-inner"><div class="hero-copy"><div class="eyebrow">祖仁泽的内容策划作品集 / 创作者研究</div><h1>意公子</h1><p class="lede">把古人的故事，<br>讲进今天的生活。</p><p class="hero-question">理解一个人，<br>也理解她如何组织内容。</p><p class="small">创作者研究 · 本项目交付 / 2026.10</p><div class="hero-actions"><a class="primary" href="#profile">阅读创作者档案 ↗</a><a href="#proposal">看项目交付 ↗</a></div></div><figure class="creator-cover-photo"><span class="portrait-presence">
-    <img class="portrait-source"
-         src="images/yigongzi-editorial-v4.webp"
-         width="1506" height="1044"
-         alt="意公子绿衣肖像"
-         fetchpriority="high">
+  <img class="portrait-source"
+       src="images/yigongzi-editorial-v4.webp"
+       width="1506" height="1044"
+       alt="意公子绿衣肖像"
+       fetchpriority="high">
 
-    <svg class="portrait-breeze-overlay"
-         viewBox="0 0 1506 1044" preserveAspectRatio="xMidYMax meet"
-         aria-hidden="true" focusable="false"
-         xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <filter id="ygbreeze-feather-hair"
-                x="-30%" y="-30%" width="160%" height="160%"
-                color-interpolation-filters="sRGB">
-          <feGaussianBlur stdDeviation="8" />
-        </filter>
-        <filter id="ygbreeze-feather-cloth"
-                x="-20%" y="-20%" width="140%" height="140%"
-                color-interpolation-filters="sRGB">
-          <feGaussianBlur stdDeviation="13" />
-        </filter>
+  <svg class="portrait-breeze-overlay"
+       viewBox="0 0 1506 1044" preserveAspectRatio="xMidYMax meet"
+       aria-hidden="true" focusable="false"
+       xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <filter id="ygwind-photo-deform" filterUnits="userSpaceOnUse"
+              primitiveUnits="userSpaceOnUse"
+              x="-40" y="-40" width="1586" height="1124"
+              color-interpolation-filters="sRGB">
+        <!-- JS supplies an opaque black-to-white regional weight PNG.
+             Black produces exactly R=.5,G=.5: NO local face displacement.
+             The small grayscale field is generated once, not per frame. -->
+        <feImage class="portrait-hair-field"
+                 x="0" y="0" width="1506" height="1044"
+                 preserveAspectRatio="none" result="hairWeight" />
+        <feColorMatrix in="hairWeight" type="matrix"
+                       values=".5 0 0 0 .5
+                               .07 0 0 0 .5
+                               0 0 0 0 .5
+                               0 0 0 0 1"
+                       result="hairVector" />
+        <feDisplacementMap class="portrait-hair-displacement"
+                           in="SourceGraphic" in2="hairVector"
+                           scale="0" xChannelSelector="R" yChannelSelector="G"
+                           result="hairDeformed" />
 
-        <!-- Hard safety clips keep feather spill out of face / skin and
-             away from all outer cutout edges; softer masks blend texture. -->
-        <clipPath id="ygbreeze-hair-safe" clipPathUnits="userSpaceOnUse">
-          <path d="M535 377 C548 351 579 334 610 350
-                   C643 375 662 429 675 469
-                   L666 534 C625 548 575 540 539 520 Z" />
-        </clipPath>
-        <mask id="ygbreeze-hair-mask" maskUnits="userSpaceOnUse"
-              x="0" y="0" width="1506" height="1044"
-              style="mask-type:luminance">
-          <rect width="1506" height="1044" fill="black" />
-          <path d="M548 383 C559 361 582 350 606 365
-                   C634 390 649 431 658 473
-                   L651 522 C622 534 581 530 551 512 Z"
-                fill="white" filter="url(#ygbreeze-feather-hair)" />
-        </mask>
+        <feImage class="portrait-cloth-field"
+                 x="0" y="0" width="1506" height="1044"
+                 preserveAspectRatio="none" result="clothWeight" />
+        <feColorMatrix in="clothWeight" type="matrix"
+                       values=".5 0 0 0 .5
+                               -.12 0 0 0 .5
+                               0 0 0 0 .5
+                               0 0 0 0 1"
+                       result="clothVector" />
+        <feDisplacementMap class="portrait-cloth-displacement"
+                           in="hairDeformed" in2="clothVector"
+                           scale="0" xChannelSelector="R" yChannelSelector="G" />
+      </filter>
+    </defs>
 
-        <clipPath id="ygbreeze-cloth-safe" clipPathUnits="userSpaceOnUse">
-          <path d="M650 592 C756 560 897 582 1012 630
-                   C1041 755 1043 908 1048 1034
-                   L570 1034 C580 925 598 792 608 687 Z" />
-        </clipPath>
-        <mask id="ygbreeze-cloth-mask" maskUnits="userSpaceOnUse"
-              x="0" y="0" width="1506" height="1044"
-              style="mask-type:luminance">
-          <rect width="1506" height="1044" fill="black" />
-          <path d="M666 607 C758 580 885 602 995 645
-                   C1020 766 1024 907 1030 1023
-                   L591 1023 C600 923 615 799 625 700 Z"
-                fill="white" filter="url(#ygbreeze-feather-cloth)" />
-        </mask>
-      </defs>
-
-      <g clip-path="url(#ygbreeze-hair-safe)" mask="url(#ygbreeze-hair-mask)">
-        <image class="portrait-hair-motion"
-               href="images/yigongzi-editorial-v4.webp"
-               x="0" y="0" width="1506" height="1044"
-               preserveAspectRatio="xMidYMid meet" />
-      </g>
-      <g clip-path="url(#ygbreeze-cloth-safe)" mask="url(#ygbreeze-cloth-mask)">
-        <image class="portrait-cloth-motion"
-               href="images/yigongzi-editorial-v4.webp"
-               x="0" y="0" width="1506" height="1044"
-               preserveAspectRatio="xMidYMid meet" />
-      </g>
-    </svg>
-  </span><figcaption><a href="https://www.jpchinapress.com/static/content/WH/2023-02-28/1080139029116227584.html" target="_blank" rel="noopener">摄影报道 ↗</a></figcaption></figure><div class="creator-side-note" aria-hidden="true">深入 · 浅出 · 共情</div><div class="hero-method-strip"><div class="hero-method-heading"><span>她自述的创作方法</span><span>资料 / 表达 / 生活经验</span></div><div class="hero-method-items"><a class="hero-method-step" href="#methods"><span class="hero-method-number">01</span><strong>深入</strong><span class="hero-method-description">先整理和理解材料。</span></a><a class="hero-method-step" href="#methods"><span class="hero-method-number">02</span><strong>浅出</strong><span class="hero-method-description">把理解组织成清晰表达。</span></a><a class="hero-method-step" href="#methods"><span class="hero-method-number">03</span><strong>共情</strong><span class="hero-method-description">连接今天的生活经验。</span></a></div></div></div></section>
+    <image class="portrait-wind-photo"
+           href="images/yigongzi-editorial-v4.webp"
+           x="0" y="0" width="1506" height="1044"
+           preserveAspectRatio="xMidYMid meet"
+           filter="url(#ygwind-photo-deform)" />
+  </svg>
+</span><figcaption><a href="https://www.jpchinapress.com/static/content/WH/2023-02-28/1080139029116227584.html" target="_blank" rel="noopener">摄影报道 ↗</a></figcaption></figure><div class="creator-side-note" aria-hidden="true">深入 · 浅出 · 共情</div><div class="hero-method-strip"><div class="hero-method-heading"><span>她自述的创作方法</span><span>资料 / 表达 / 生活经验</span></div><div class="hero-method-items"><a class="hero-method-step" href="#methods"><span class="hero-method-number">01</span><strong>深入</strong><span class="hero-method-description">先整理和理解材料。</span></a><a class="hero-method-step" href="#methods"><span class="hero-method-number">02</span><strong>浅出</strong><span class="hero-method-description">把理解组织成清晰表达。</span></a><a class="hero-method-step" href="#methods"><span class="hero-method-number">03</span><strong>共情</strong><span class="hero-method-description">连接今天的生活经验。</span></a></div></div></div></section>
 <section class="section creator-video-section scenic-chapter" id="featuredVideo"><div class="chapter-landscape pond-landscape" aria-hidden="true"></div><div class="wrap creator-video-layout"><div class="creator-video-copy reveal"><span class="section-num">内容现场 / 苏东坡</span><h2>声音、人物，<br>与当下的生活。</h2><p class="editorial">从一个熟悉的问题，<br>进入一个人物的一生。</p><p>这支意公子原作作为研究素材保留，帮助观察她的语言、节奏和人物表达。</p><p class="small">意公子原作 · 研究素材 / 约11分39秒</p><a href="#methods">继续看创作方法 ↗</a></div><div class="hero-video-surface"><video id="heroVideo" src="media/yigongzi-sudongpo.mp4" autoplay muted loop playsinline preload="metadata" poster="media/yigongzi-sudongpo-poster.jpg"></video><div class="hero-video-controls" aria-label="原作视频播放控制"><div class="hero-video-actions"><button id="heroVideoPlay" type="button" aria-label="播放作品" aria-pressed="false">播放</button><button id="heroVideoSound" type="button" aria-label="开启作品声音" aria-pressed="false">开启声音</button></div><div class="hero-video-progress"><output id="heroVideoCurrent" for="heroVideoSeek" aria-label="已播放时间">0:00</output><input id="heroVideoSeek" type="range" min="0" max="0" step="0.1" value="0" aria-label="视频播放进度" aria-valuetext="时长加载后可调整进度" disabled><output id="heroVideoDuration" for="heroVideoSeek" aria-label="视频总时长">--:--</output></div></div><p class="hero-video-status" id="heroVideoStatus" role="status" aria-live="polite" hidden>视频暂时无法播放</p></div></div></section>
 <section class="section scenic-profile" id="profile"><div class="chapter-landscape study-landscape" aria-hidden="true"></div><div class="wrap"><div class="section-head reveal"><div><span class="section-num">第二章 / 经历与创作</span><h2>主要经历</h2></div><p>她的身份、职业发展、创作方法与内容产品，构成一条相互关联的发展线。</p></div><nav class="profile-index" role="tablist" aria-label="档案分类"><button id="profileTab0" role="tab" aria-controls="profileGroup0" aria-selected="true">身份与角色</button><button id="profileTab1" role="tab" aria-controls="profileGroup1" aria-selected="false">职业与发展</button><button id="profileTab2" role="tab" aria-controls="profileGroup2" aria-selected="false">内容主张</button><button id="profileTab3" role="tab" aria-controls="profileGroup3" aria-selected="false">资料方法与团队协作</button><button id="profileTab4" role="tab" aria-controls="profileGroup4" aria-selected="false">节目与出版</button></nav><div class="profile-group" id="profileGroup0" role="tabpanel" aria-labelledby="profileTab0"><h3><span class="mono">01</span>身份与角色</h3><div class="profile-items"><article class="profile-item"><h4>姓名与创作名称</h4><p>在2026年的公开采访中，“意公子”对应吴敏婕这一公开姓名。她以意公子为内容创作名称，也是文化艺术科普平台“意外艺术”的创始人。</p></article><article class="profile-item"><h4>创作者与公共角色</h4><p>据2026年公开专访，吴敏婕同时担任全国政协委员。访谈围绕文化传播实践与履职展开，呈现她作为内容创作者参与公共事务的职业角色。</p></article></div></div><div class="profile-group" id="profileGroup1" role="tabpanel" aria-labelledby="profileTab1"><h3><span class="mono">02</span>职业与发展</h3><div class="profile-items"><article class="profile-item"><h4>广播电视工作经历</h4><p>据《人民政协报》2026年报道，吴敏婕在创业前有约五年的广播电视工作经历，工作涉及主持、栏目策划制作及品牌策划。</p></article><article class="profile-item"><h4>创业与早期节目</h4><p>2016年的采访将意外艺术的创业起点记为2013年，《艺术很难吗》则于2014年6月推出。创业与节目上线是两个不同的发展节点。</p></article><article class="profile-item"><h4>聚焦中国艺术与人物</h4><p>在2022年发布的公开分享中，她回顾自己从2021年2月起亲自写稿，聚焦中国艺术与人物。2026年的采访也记录了这一内容转向和回到写作的选择。</p></article></div></div><div class="profile-group" id="profileGroup2" role="tabpanel" aria-labelledby="profileTab2"><h3><span class="mono">03</span>内容主张</h3><div class="profile-items"><article class="profile-item"><h4>连接古今与生活经验</h4><p>本档案将其公开创作方向概括为：通过文学艺术与历史人物的故事，连接当代人的生活经验与困惑。这一研究概括依据公开采访与方法分享，具体表达仍以各作品为准。</p></article><article class="profile-item"><h4>深入、浅出、共情</h4><p>她在方法分享与专访中，将创作过程概括为“深入、浅出、共情”，并强调深入的重要性：先整理、理解材料，再组织表达，形成与观众的情感连接。</p></article></div></div><div class="profile-group" id="profileGroup3" role="tabpanel" aria-labelledby="profileTab3"><h3><span class="mono">04</span>资料方法与团队协作</h3><div class="profile-items"><article class="profile-item"><h4>时代、年表与思想背景</h4><p>按2025年发布的方法分享文字，人物研究围绕时代环境、个人年表与作品、思想背景展开。将作品放回作者的具体经历，是她描述的资料组织方式。</p></article><article class="profile-item"><h4>表达之前的准备</h4><p>在2025年发布的分享文字中，她自述会亲自撰写详细稿件，并称录制时不用提词器。这里记录的是本人公开说明，用于理解自然表达背后的准备过程。</p></article><article class="profile-item"><h4>资料、写作与运营协作</h4><p>《人民政协报》2026年5月报道描述了团队分工：资料人员收集、整理材料，她本人阅读消化，运营搜集用户反馈，再共同提炼主题，形成多环节协作。</p></article></div></div><div class="profile-group" id="profileGroup4" role="tabpanel" aria-labelledby="profileTab4"><h3><span class="mono">05</span>节目与出版</h3><div class="profile-items"><article class="profile-item"><h4>《人生得遇苏东坡》</h4><p>《人生得遇苏东坡》的大陆版由果麦参与出品、太白文艺出版社出版；繁体版另有三采文化出版资料。两种版本分别记录，保留各自的出版机构与书目信息。</p></article><article class="profile-item"><h4>《我们的来处》</h4><p>2026年5月公开材料仍以筹备介绍《我们的来处》；6至8月已有系列发布，微博官方7月也作出栏目公告。现有证据记录了栏目从筹备进入发布期的变化。</p></article></div></div></div></section>
 
@@ -655,7 +611,7 @@ body.paused .creator-cover-photo .portrait-breeze-overlay {
 <section class="section scenic-chapter" id="business"><div class="chapter-landscape study-landscape business-landscape" aria-hidden="true"></div><div class="wrap"><div class="section-head reveal"><div><span class="section-num">内容生态 / 节目与产品</span><h2>一段讲述，<br>也可以成为更长的内容。</h2></div><p>视频、出版与系列节目，呈现她不同长度和场景的表达。</p></div><div class="creator-products reveal"><div class="creator-book"><img src="images/book-edition.webp" width="650" height="650" alt="《人生得遇蘇東坡》三采繁体限量版套装" loading="lazy"><p class="small">三采繁体限量版 / 2025年8月<br><a href="https://www.suncolor.com.tw/BookPage.aspx?bokno=105020114002" target="_blank" rel="noopener">出版信息 / 三采文化 ↗</a></p></div><div><article><span class="mono">01 / 阅读</span><h3>《人生得遇苏东坡》</h3><p>从视频中的文化理解延展到图书阅读。大陆版与繁体版分别记录，不混用出版机构、版本或日期。</p></article><article><span class="mono">02 / 系列</span><h3>《我们的来处》</h3><p>2026年经历筹备与系列发布，将文化主题组织成持续表达。</p></article><article><span class="mono">03 / 历史产品线索</span><h3>人文艺术与儿童艺术课程</h3><p>早期公开材料保留课程方向，帮助理解内容产品的发展；历史产品不直接视为当前销售清单。</p></article></div></div></div></section>
 <section class="section scenic-chapter" id="methods"><div class="chapter-landscape pond-landscape" aria-hidden="true"></div><div class="wrap"><div class="section-head reveal"><div><span class="section-num">创作方法 / 从理解到表达</span><h2>深入、浅出，<br>让古今经验相遇。</h2></div><p>她自述的创作方法与具体内容观察，共同帮助理解自然表达背后的准备过程。</p></div><div class="portfolio-method-tabs" role="tablist" aria-label="创作环节"><button id="methodTab0" role="tab" aria-controls="methodPanel" aria-selected="true">01 深入</button><button id="methodTab1" role="tab" aria-controls="methodPanel" aria-selected="false" tabindex="-1">02 浅出</button><button id="methodTab2" role="tab" aria-controls="methodPanel" aria-selected="false" tabindex="-1">03 共情</button></div><div id="methodPanel" class="portfolio-method-panel" role="tabpanel" aria-labelledby="methodTab0"></div><div class="scene-interlude" id="readerScene"><figure class="research-photo"><img src="images/reader-meeting.jpg" width="900" height="599" alt="意公子在新书首发会上展示读者留言" loading="lazy" decoding="async"><figcaption>读者的声音 / 新书首发会，2025年2月15日<br><a href="https://m.jfdaily.com/wx/detail.do?id=861882" target="_blank" rel="noopener">摄影报道 / 上观新闻·文汇报 ↗</a></figcaption></figure><div class="scene-copy"><span class="eyebrow">与读者相遇</span><h3>观众的经验，<br>也进入表达。</h3><p>在《人生得遇苏东坡》新书首发会上，她向读者展示海报里的留言。来自不同生活的感受，成为这场交流的一部分。</p></div></div><div class="scene-interlude scene-community" id="communityScene"><div class="scene-copy"><span class="eyebrow">屏幕与真实的现场</span><h3>从一段讲述，<br>走到一次相遇。</h3><p>同场首发会把屏幕里的文化讲述，延展为书店中的交流。这里记录2025年的公开活动。</p></div><figure class="research-photo"><img src="images/book-launch.jpg" width="900" height="599" alt="《人生得遇苏东坡》新书首发会现场合影" loading="lazy" decoding="async"><figcaption>首发会现场 / 上海钟书阁，2025年2月15日<br><a href="https://m.jfdaily.com/wx/detail.do?id=861882" target="_blank" rel="noopener">摄影报道 / 上观新闻·文汇报 ↗</a></figcaption></figure></div></div></section>
 <section class="section creator-proposal-section scenic-chapter" id="proposal"><div class="chapter-landscape pond-landscape" aria-hidden="true"></div><div class="wrap"><div class="section-head reveal"><div><span class="section-num">2026.10 / 本项目交付</span><h2>这次项目，<br>我完成了什么。</h2></div><p>从资料核对到文案小样，再到交互网页，把对意公子的理解做成可以直接查看的交付。</p></div><div class="project-context"><h3>四个项目片段，我怎样完成研究。</h3><p>原作的发布时间与本次完成的研究分别记录。</p><div id="projectSwitches" class="project-switches" role="tablist" aria-label="当期项目与本次研究"></div><div id="projectDetail" class="project-detail" role="tabpanel"></div><p class="project-context-note">2019—2020.08对应原作发布背景；本项目交付完成于2026.10。</p></div><div id="scenarioIntro" class="scenario-intro"></div><div class="proposal-tabs" role="tablist" aria-label="本项目交付"><button id="proposalTab0" role="tab" aria-controls="proposalPanel" aria-selected="true">研究</button><button id="proposalTab1" role="tab" aria-controls="proposalPanel" aria-selected="false" tabindex="-1">文案</button><button id="proposalTab2" role="tab" aria-controls="proposalPanel" aria-selected="false" tabindex="-1">呈现</button><button id="proposalTab3" role="tab" aria-controls="proposalPanel" aria-selected="false" tabindex="-1">素材</button></div><div id="proposalPanel" class="portfolio-method-panel" role="tabpanel" aria-labelledby="proposalTab0"></div><p class="portfolio-tool-note">本项目：创作者研究、原创文案小样与交互网页。意公子原作归属其创作者及团队。</p><div class="portfolio-close reveal"><span class="eyebrow">祖仁泽 / 内容策划作品集</span><h3>从理解一个创作者，<br>走到具体的内容工作。</h3><p>欢迎围绕研究过程、方案选择和具体交付交流。</p><button id="copyPortfolio">复制作品集链接 ↗</button><p id="copyStatus" role="status" aria-live="polite"></p></div></div></section>
-<section class="section seasons-section" id="seasons"><div class="wrap"><div class="season-heading"><div><span class="section-num">窗外 / 四时</span><h2>看窗外，<br>四季慢慢经过。</h2></div><div class="season-controls"><div class="season-tabs" role="tablist" aria-label="窗外季节"><button id="seasonSpring" data-season="spring" role="tab" aria-selected="false" aria-controls="seasonWindow" tabindex="-1">春</button><button id="seasonSummer" data-season="summer" role="tab" aria-selected="true" aria-controls="seasonWindow">夏</button><button id="seasonAutumn" data-season="autumn" role="tab" aria-selected="false" aria-controls="seasonWindow" tabindex="-1">秋</button><button id="seasonWinter" data-season="winter" role="tab" aria-selected="false" aria-controls="seasonWindow" tabindex="-1">冬</button></div><button id="seasonAuto" aria-pressed="true">四季流转 · 开</button></div></div><div id="seasonWindow" class="season-window" role="tabpanel" aria-labelledby="seasonSummer" data-season="summer"><div class="season-view" aria-hidden="true"><div class="season-pane" data-pane="spring"></div><div class="season-pane is-current" data-pane="summer"></div><div class="season-pane" data-pane="autumn"></div><div class="season-pane" data-pane="winter"></div><canvas id="seasonWeather" class="weather-canvas"></canvas><div class="window-light"></div></div><div class="window-crossbar" aria-hidden="true"></div><div class="window-ledge" aria-hidden="true"></div><div class="season-caption"><span id="seasonName">夏雨</span><span id="seasonMood">雨落水面，绿意正浓。</span></div></div><div class="season-bottom"><p>春雨、夏绿、秋风、冬雪。</p><button data-sound-toggle aria-pressed="false">开启环境声</button><label class="ambience-volume" for="ambienceVolume">音量 <input id="ambienceVolume" type="range" min="0" max="100" value="55" aria-label="环境声音量"></label><span id="soundStatus" role="status" aria-live="polite">点按开启风声与雨声。</span></div></div></section>
+<section class="section seasons-section" id="seasons"><div class="wrap"><div class="season-heading"><div><span class="section-num">窗外 / 四时</span><h2>看窗外，<br>四季慢慢经过。</h2></div><div class="season-controls"><div class="season-tabs" role="tablist" aria-label="窗外季节"><button id="seasonSpring" data-season="spring" role="tab" aria-selected="false" aria-controls="seasonWindow" tabindex="-1">春</button><button id="seasonSummer" data-season="summer" role="tab" aria-selected="true" aria-controls="seasonWindow">夏</button><button id="seasonAutumn" data-season="autumn" role="tab" aria-selected="false" aria-controls="seasonWindow" tabindex="-1">秋</button><button id="seasonWinter" data-season="winter" role="tab" aria-selected="false" aria-controls="seasonWindow" tabindex="-1">冬</button></div><button id="seasonAuto" aria-pressed="true">四季流转 · 开</button></div></div><div id="seasonWindow" class="season-window" role="tabpanel" aria-labelledby="seasonSummer" data-season="summer"><div class="season-view" aria-hidden="true"><div class="season-pane" data-pane="spring"></div><div class="season-pane is-current" data-pane="summer"></div><div class="season-pane" data-pane="autumn"></div><div class="season-pane" data-pane="winter"></div><canvas id="seasonWeather" class="weather-canvas"></canvas><div class="window-light"></div></div><div class="window-crossbar" aria-hidden="true"></div><div class="window-ledge" aria-hidden="true"></div><div class="season-caption"><span id="seasonName">夏雨</span><span id="seasonMood">雨落水面，绿意正浓。</span></div></div><div class="season-bottom"><p>春雨、夏绿、秋风、冬雪。</p><button data-sound-toggle aria-pressed="true">关闭环境声</button><label class="ambience-volume" for="ambienceVolume">音量 <input id="ambienceVolume" type="range" min="0" max="100" value="55" aria-label="环境声音量"></label><span id="soundStatus" role="status" aria-live="polite">环境声默认开启 · 可随时关闭。</span></div></div></section>
 <audio id="windAmbience" src="media/nature-wind-v4.mp3" preload="none" loop></audio><audio id="rainAmbience" src="media/nature-rain-v4.mp3" preload="none" loop></audio><audio id="doorFoley" src="media/door-open-v4.mp3" preload="none"></audio>
 
 <audio id="introFlute" src="media/intro-flute-v4.mp3" preload="none"></audio><audio id="waterDrop" src="media/water-drop-v4.mp3" preload="none"></audio>
@@ -846,7 +802,7 @@ sync();
   const tabs=[...document.querySelectorAll('[data-season][role="tab"]')];
   const wind=el('windAmbience'),rain=el('rainAmbience'),door=el('doorFoley'),flute=el('introFlute'),drop=el('waterDrop'),video=el('heroVideo');
   const soundButtons=[...document.querySelectorAll('[data-sound-toggle]')];
-  let season='summer',automatic=!reduced,elapsed=0,windowVisible=false,soundEnabled=false,master=.55,doorTimer=0;
+  let season='summer',automatic=!reduced,elapsed=0,windowVisible=false,soundEnabled=true,soundReady=false,soundBlocked=false,master=.55,doorTimer=0,soundAttempt=0;
   let raf=0,idleTimer=0,lastTime=0,fluteTimer=0,dropTimer=0,fluteStarted=0,unlocking=false;
   const failedAudio=new Set(),pendingAudio=new Set();
   const motionBlocked=()=>reduced||document.body.classList.contains('paused');
@@ -879,15 +835,16 @@ sync();
 
   function updateMix(){
     if(unlocking)return;
-    const audible=soundEnabled&&!document.hidden&&!motionBlocked()&&!videoAudible();
+    const audible=soundEnabled&&soundReady&&!document.hidden&&!motionBlocked()&&!videoAudible();
     const windLevels={spring:.12,summer:.05,autumn:.45,winter:.18};
     const rainLevels={spring:.18,summer:.28,autumn:0,winter:0};
     audioTargets.set(wind,audible?windLevels[season]*master:0);audioTargets.set(rain,audible?rainLevels[season]*master:0);
-    if(!audible){clearTimeout(doorTimer);clearTimeout(fluteTimer);clearTimeout(dropTimer);door.pause();door.volume=0;flute.pause();drop.pause();}
+    if(!audible){clearTimeout(doorTimer);clearTimeout(fluteTimer);clearTimeout(dropTimer);dropTimer=0;door.pause();door.volume=0;flute.pause();drop.pause();}
     else scheduleDrop();
     soundButtons.forEach(b=>{b.setAttribute('aria-pressed',String(soundEnabled));b.textContent=soundEnabled?'关闭环境声':'开启环境声';});
-    document.body.dataset.ambienceEnabled=String(soundEnabled);document.body.dataset.ambienceDucked=String(soundEnabled&&videoAudible());
-    if(!soundEnabled)setStatus('点按开启风声与雨声。');
+    document.body.dataset.ambienceEnabled=String(soundEnabled);document.body.dataset.ambienceReady=String(soundReady);document.body.dataset.ambienceBlocked=String(soundBlocked);document.body.dataset.ambienceDucked=String(soundEnabled&&videoAudible());
+    if(!soundEnabled)setStatus('环境声已关闭。');
+    else if(!soundReady)setStatus(soundBlocked?'声音默认开启，点按页面即可播放。':'正在准备风声与雨声。');
     else if(videoAudible())setStatus('原作发声时，环境声已暂停。');
     else if(motionBlocked())setStatus('动态已暂停，环境声也已暂停。');
     else setStatus('环境声已开启 · 可随时关闭。');
@@ -895,20 +852,37 @@ sync();
   }
   async function enableSound(){
     if(unlocking)return false;
-    unlocking=true;
+    const attempt=++soundAttempt;
+    soundEnabled=true;unlocking=true;
     failedAudio.clear();
     const all=[wind,rain,door,flute,drop];all.forEach(a=>a.volume=0);
+    // Attempt audible playback honestly; do not infer autoplay permission
+    // from silent media. One ordinary user gesture retries if blocked.
+    if(!motionBlocked()&&!document.hidden&&!videoAudible()){
+      wind.volume=({spring:.12,summer:.05,autumn:.45,winter:.18})[season]*master;
+      rain.volume=({spring:.18,summer:.28,autumn:0,winter:0})[season]*master;
+    }
     const results=await Promise.allSettled(all.map(a=>a.play()));
     unlocking=false;
+    if(attempt!==soundAttempt||!soundEnabled){all.forEach(a=>{a.pause();a.volume=0;});updateMix();return false;}
     results.forEach((r,i)=>{if(r.status==='rejected')failedAudio.add(all[i]);});
     door.pause();try{door.currentTime=0;}catch{}
     flute.pause();drop.pause();
-    if(results[0].status==='rejected'&&results[1].status==='rejected'){soundEnabled=false;updateMix();setStatus('声音暂时无法播放，请再点一次开启。');return false;}
-    soundEnabled=true;updateMix();return true;
+    soundReady=results[0].status==='fulfilled'||results[1].status==='fulfilled';soundBlocked=!soundReady;
+    updateMix();return soundReady;
   }
-  soundButtons.forEach(b=>{b.onclick=async()=>{if(soundEnabled){soundEnabled=false;updateMix();}else await enableSound();};});
+  function disableSound(){soundEnabled=false;soundAttempt++;clearTimeout(doorTimer);clearTimeout(fluteTimer);clearTimeout(dropTimer);dropTimer=0;[wind,rain,door,flute,drop].forEach(a=>{a.pause();a.volume=0;});if(!unlocking)updateMix();}
+  soundButtons.forEach(b=>{b.onclick=async()=>{if(soundEnabled)disableSound();else if(await enableSound())introSound();};});
   el('startSoundIntro').onclick=async()=>{if(await enableSound()){if(motionBlocked()){setStatus('开启动态后，可重看有声入场。');return;}startIntro();introSound();}};
   el('replayIntro').onclick=()=>{startIntro();introSound();};
+  const unlockOnInteraction=async event=>{
+    if(!soundEnabled||soundReady||unlocking)return;
+    if(event.type==='keydown'&&['Shift','Control','Alt','Meta'].includes(event.key))return;
+    if(event.target instanceof Element&&event.target.closest('[data-sound-toggle],#startSoundIntro,#ambienceVolume,#motionToggle,#footerMotion'))return;
+    if(await enableSound())introSound();
+  };
+  document.addEventListener('pointerdown',unlockOnInteraction,{passive:true});
+  document.addEventListener('keydown',unlockOnInteraction);
   const volume=el('ambienceVolume');
   volume.oninput=()=>{master=Number(volume.value)/100;document.body.dataset.ambienceVolume=volume.value;updateMix();};
   for(const a of [wind,rain,door,flute,drop])a.addEventListener('error',()=>{failedAudio.add(a);if(soundEnabled)setStatus('部分声音暂时未加载好，可以关闭后重试。');});
@@ -916,7 +890,7 @@ sync();
 
   function introSound(){
     clearTimeout(doorTimer);
-    if(!soundEnabled||document.hidden||motionBlocked()||videoAudible())return;
+    if(!soundEnabled||!soundReady||document.hidden||motionBlocked()||videoAudible()||intro.classList.contains('gone'))return;
     clearTimeout(fluteTimer);flute.pause();try{flute.currentTime=0;}catch{}flute.volume=.4*master;fluteStarted=Date.now();
     flute.play().then(()=>{intro.dataset.fluteStarted=String(fluteStarted);wake();}).catch(()=>failedAudio.add(flute));
     doorTimer=setTimeout(()=>{if(!soundEnabled||intro.classList.contains('gone'))return;try{door.currentTime=0;}catch{}door.volume=.6*master;
@@ -924,7 +898,7 @@ sync();
     },120);
   }
   function scheduleDrop(){
-    if(dropTimer||!soundEnabled||document.hidden||motionBlocked()||videoAudible())return;
+    if(dropTimer||!soundEnabled||!soundReady||document.hidden||motionBlocked()||videoAudible())return;
     dropTimer=setTimeout(()=>{dropTimer=0;if(!soundEnabled||document.hidden||motionBlocked()||videoAudible())return;
       if((season==='spring'||season==='summer')&&!failedAudio.has(drop)){try{drop.currentTime=0;}catch{}drop.volume=.25*master;drop.play().then(()=>{document.body.dataset.dropPlayCount=String(Number(document.body.dataset.dropPlayCount||0)+1);}).catch(()=>failedAudio.add(drop));}
       scheduleDrop();
@@ -964,6 +938,214 @@ sync();
   function wake(){clearTimeout(idleTimer);if(!raf&&!document.hidden)raf=requestAnimationFrame(tick);}
   document.addEventListener('visibilitychange',()=>{lastTime=0;updateAuto();updateMix();if(document.hidden){cancelAnimationFrame(raf);raf=0;clearTimeout(idleTimer);[wind,rain,door,flute,drop].forEach(a=>a.pause());}else wake();});
   setSeason('summer');updateAuto();updateMix();wake();
+  enableSound().then(ready=>{if(ready)introSound();});
+})();
+
+</script>
+<script>
+/* Single-photo regional silhouette motion; no generated face / new source.
+ * Required: portrait-breeze.css + its new portrait-presence snippet.
+ * Does not change the site's motion controls, body classes, audio or DOM text.
+ */
+(() => {
+  'use strict';
+  const SOURCE_W = 1506, SOURCE_H = 1044;
+  const TAU = Math.PI * 2;
+  const clamp = (value, min = 0, max = 1) => Math.max(min, Math.min(max, value));
+  const smooth = (lo, hi, value) => {
+    const t = clamp((value - lo) / (hi - lo));
+    return t * t * (3 - 2 * t);
+  };
+  const motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  /* This ellipse contains the inspected complete face / eyes / lips / neck.
+   * Weight is EXACTLY zero inside it; outside, a soft safety margin joins
+   * the hair deformation without a hard seam. Scalp stays anchored too.
+   */
+  function faceGuard(x, y) {
+    const distance = Math.hypot((x - 823) / 200, (y - 278) / 275);
+    return smooth(1, 1.22, distance);
+  }
+
+  function hairWeight(x, y) {
+    const left = Math.exp(-1.45 * (((x - 580) / 177) ** 2 + ((y - 490) / 140) ** 2));
+    const right = .8 * Math.exp(-1.6 * (((x - 956) / 110) ** 2 + ((y - 491) / 126) ** 2));
+    return clamp(left + right) * smooth(290, 415, y) * faceGuard(x, y)
+      * (1 - smooth(548, 616, y));
+  }
+
+  function clothWeight(x, y) {
+    const folds = Math.exp(-.95 * (((x - 822) / 340) ** 2 + ((y - 853) / 390) ** 2));
+    return folds * smooth(555, 685, y) * faceGuard(x, y);
+  }
+
+  /* Generate a smooth scalar field ONCE. The opaque grayscale red value
+   * is turned into neutral-centered R/G vectors by the SVG color matrix.
+   * Unlike using 128 as neutral, black + an exact .5 matrix offset gives
+   * a zero displacement over eyes and mouth at every animation scale.
+   */
+  function createField(weight) {
+    const canvas = document.createElement('canvas');
+    canvas.width = 512;
+    canvas.height = 355;
+    const context = canvas.getContext('2d');
+    if (!context) throw new Error('No displacement field context');
+    const pixels = context.createImageData(canvas.width, canvas.height);
+    for (let row = 0; row < canvas.height; row++) {
+      const y = (row + .5) / canvas.height * SOURCE_H;
+      for (let col = 0; col < canvas.width; col++) {
+        const x = (col + .5) / canvas.width * SOURCE_W;
+        const index = (row * canvas.width + col) * 4;
+        const value = Math.round(clamp(weight(x, y)) * 255);
+        pixels.data[index] = value;
+        pixels.data[index + 1] = value;
+        pixels.data[index + 2] = value;
+        pixels.data[index + 3] = 255;
+      }
+    }
+    context.putImageData(pixels, 0, 0);
+    return canvas.toDataURL('image/png');
+  }
+
+  function decodedImage(url) {
+    return new Promise((resolve, reject) => {
+      const image = new Image();
+      image.onload = () => resolve(image);
+      image.onerror = () => reject(new Error('Photo or displacement field did not decode'));
+      image.src = url;
+      if (image.complete && image.naturalWidth) resolve(image);
+    });
+  }
+
+  async function setup(root) {
+    if (root.dataset.windInitialized === '1') return;
+    root.dataset.windInitialized = '1';
+    const source = root.querySelector('.portrait-source');
+    const svg = root.querySelector('.portrait-breeze-overlay');
+    const hairMap = root.querySelector('.portrait-hair-field');
+    const clothMap = root.querySelector('.portrait-cloth-field');
+    const hairDisplacement = root.querySelector('.portrait-hair-displacement');
+    const clothDisplacement = root.querySelector('.portrait-cloth-displacement');
+    if (!source || !svg || !hairMap || !clothMap || !hairDisplacement || !clothDisplacement
+        || !('SVGFEDisplacementMapElement' in window)) {
+      root.dataset.windState = 'static-fallback';
+      return;
+    }
+
+    try {
+      const hairURL = createField(hairWeight);
+      const clothURL = createField(clothWeight);
+      await Promise.all([decodedImage(source.currentSrc || source.src),
+        decodedImage(hairURL), decodedImage(clothURL)]);
+      hairMap.setAttribute('href', hairURL);
+      clothMap.setAttribute('href', clothURL);
+      root.dataset.windDriver = 'single-photo-regional-displacement';
+      root.dataset.windFaceProtected = String([[792, 222], [902, 220], [854, 337],
+        [738, 154], [782, 480]].every(([x, y]) => hairWeight(x, y) === 0 && clothWeight(x, y) === 0));
+    } catch (_) {
+      root.dataset.windState = 'static-fallback';
+      return;
+    }
+
+    let frame = 0, started = 0, lastDraw = -Infinity, running = false;
+    let inView = true, displayScale = 1, compact = false;
+    function measure() {
+      displayScale = Math.max(.05, Math.min(svg.clientWidth / SOURCE_W, svg.clientHeight / SOURCE_H));
+      compact = window.innerWidth <= 620;
+    }
+    function reset() {
+      running = false;
+      cancelAnimationFrame(frame);
+      frame = 0;
+      root.classList.remove('portrait-wind-running');
+      root.style.removeProperty('transform');
+      hairDisplacement.setAttribute('scale', '0');
+      clothDisplacement.setAttribute('scale', '0');
+      root.dataset.windState = 'static';
+      root.dataset.windHairPx = '0';
+      root.dataset.windClothPx = '0';
+    }
+    function canRun() {
+      return !motionPreference.matches && !document.body.classList.contains('paused')
+        && document.visibilityState !== 'hidden' && inView;
+    }
+    function tick(time) {
+      if (!running || !canRun()) {
+        reset();
+        return;
+      }
+      /* 30 updates/s suffice for 8–12s micro-motion; never allocate a map
+       * or decode the photo during a frame. Only two SVG numbers and a
+       * rigid wrapper transform change.
+       */
+      if (time - lastDraw >= 32) {
+        lastDraw = time;
+        const elapsed = Math.max(0, (time - started) / 1000);
+        const entry = smooth(0, 1.15, elapsed);
+        const hairWave = .82 * Math.sin(TAU * elapsed / 8.7)
+          + .18 * Math.sin(TAU * elapsed / 4.7);
+        const clothWave = .78 * Math.sin(TAU * elapsed / 10.8)
+          + .22 * Math.sin(TAU * elapsed / 6.2);
+        const hairPx = (compact ? 3.4 : 5.2) * hairWave * entry;
+        const clothPx = (compact ? 2 : 3.3) * clothWave * entry;
+        /* Matrix R=.5+.5*weight, so scale=2*CSS-amplitude/source-scale.
+         * This makes amplitude refer to visible CSS pixels, rather than
+         * the old source-space "2px" that shrank to subpixel motion.
+         */
+        hairDisplacement.setAttribute('scale', (2 * hairPx / displayScale).toFixed(4));
+        clothDisplacement.setAttribute('scale', (2 * clothPx / displayScale).toFixed(4));
+        const breath = .5 * (1 - Math.cos(TAU * elapsed / 11.8)) * entry;
+        const sway = Math.sin(TAU * elapsed / 10.8) * entry;
+        const strength = compact ? .72 : 1;
+        root.style.transform = 'translate3d(' + (.55 * sway * strength).toFixed(3) + 'px,'
+          + (-1.1 * breath * strength).toFixed(3) + 'px,0) rotate('
+          + (.042 * sway * strength).toFixed(4) + 'deg) scaleY('
+          + (1 + .0017 * breath * strength).toFixed(6) + ')';
+        root.dataset.windHairPx = hairPx.toFixed(3);
+        root.dataset.windClothPx = clothPx.toFixed(3);
+      }
+      frame = requestAnimationFrame(tick);
+    }
+    function sync() {
+      if (!canRun()) { reset(); return; }
+      if (running) return;
+      measure();
+      started = performance.now();
+      lastDraw = -Infinity;
+      running = true;
+      root.classList.add('portrait-wind-running');
+      root.dataset.windState = 'running';
+      frame = requestAnimationFrame(tick);
+    }
+
+    const bodyObserver = new MutationObserver(sync);
+    bodyObserver.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+    const resized = () => measure();
+    window.addEventListener('resize', resized, { passive: true });
+    if ('ResizeObserver' in window) new ResizeObserver(measure).observe(svg);
+    document.addEventListener('visibilitychange', sync);
+    if (motionPreference.addEventListener) motionPreference.addEventListener('change', sync);
+    else motionPreference.addListener(sync);
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(entries => {
+        inView = entries[0].isIntersecting;
+        sync();
+      }, { rootMargin: '80px 0px', threshold: .01 }).observe(root);
+    }
+    window.addEventListener('pagehide', reset);
+    window.addEventListener('pageshow', sync);
+    measure();
+    /* Two frames give the already-decoded map URLs time to attach to feImage.
+     * Scale stays zero until the driver begins and ramps in from static.
+     */
+    requestAnimationFrame(() => requestAnimationFrame(sync));
+  }
+
+  function init() {
+    document.querySelectorAll('.creator-cover-photo .portrait-presence').forEach(setup);
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once: true });
+  else init();
 })();
 
 </script>

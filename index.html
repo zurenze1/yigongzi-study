@@ -715,8 +715,8 @@ sync();
   function introSound(){
     clearTimeout(doorTimer);
     if(!soundEnabled||document.hidden||motionBlocked()||videoAudible())return;
-    clearTimeout(fluteTimer);flute.pause();try{flute.currentTime=0;}catch{}flute.volume=.4*master;
-    flute.play().then(()=>{fluteStarted=Date.now();intro.dataset.fluteStarted=String(fluteStarted);wake();}).catch(()=>failedAudio.add(flute));
+    clearTimeout(fluteTimer);flute.pause();try{flute.currentTime=0;}catch{}flute.volume=.4*master;fluteStarted=Date.now();
+    flute.play().then(()=>{intro.dataset.fluteStarted=String(fluteStarted);wake();}).catch(()=>failedAudio.add(flute));
     doorTimer=setTimeout(()=>{if(!soundEnabled||intro.classList.contains('gone'))return;try{door.currentTime=0;}catch{}door.volume=.6*master;
       door.play().then(()=>{intro.dataset.doorPlayCount=String(Number(intro.dataset.doorPlayCount||0)+1);}).catch(()=>setStatus('开门声暂时无法播放，可以重试。'));
     },120);

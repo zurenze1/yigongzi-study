@@ -4,7 +4,7 @@
     "observed_on": "2026-10-12",
     "timezone": "Asia/Shanghai",
     "state": "completed_with_gaps",
-    "version": "public-v7-reader",
+    "version": "public-v7-player",
     "purpose": "意公子的公开职业发展、内容方法、受众与内容产品研究",
     "scope": "公开职业材料；361主号卡片目录＋5支完整音频分析；无完整视频观看"
   },
@@ -9211,5 +9211,17 @@
         "limit": "界面未给出画像样本区间及去重定义；不能推为每支作品/全平台的受众。品牌偏好不是作者合作客户。"
       }
     }
+  },
+  "featured_video": {
+    "id": "7153557301838777607",
+    "title": "苏东坡给自己做了一生的注脚：“问汝平生功业，黄州惠州儋州。” #苏东坡式自嘲  #意公子大话苏东坡  #知识出游计划",
+    "player_url": "https://open.douyin.com/player/video?vid=7153557301838777607&autoplay=0",
+    "width": 1080,
+    "height": 1920,
+    "provider": "抖音官方嵌入播放器",
+    "source_url": "https://www.douyin.com/video/7153557301838777607",
+    "autoplay_verified": false,
+    "loop_verified": false,
+    "hosted_copy": false
   }
 }

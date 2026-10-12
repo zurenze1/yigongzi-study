@@ -1333,7 +1333,7 @@ sync();
     tabs.forEach(b=>{const active=b.dataset.season===value;b.setAttribute('aria-selected',String(active));b.tabIndex=active?0:-1;});
     windowView.setAttribute('aria-labelledby',tabs.find(b=>b.dataset.season===value).id);
     el('seasonName').textContent=names[value][0];el('seasonMood').textContent=names[value][1];
-    weather.forEach(w=>w.reset());updateMix();wake();
+    weather.forEach(w=>{if(w.canvas.id==='seasonWeather')w.reset();});updateMix();wake();
   }
   tabs.forEach((button,index)=>{
     button.onclick=()=>setSeason(button.dataset.season);
@@ -1828,7 +1828,11 @@ sync();
     figure.addEventListener('focusout',event=>{if(!figure.contains(event.relatedTarget)){focused=false;touched=false;update();}});
     figure.addEventListener('click',event=>{
       if(event.target.closest('a,button'))return;
-      if(event.pointerType==='touch'||matchMedia('(hover: none)').matches){touched=!touched;update();}
+      if(event.pointerType==='touch'||matchMedia('(hover: none)').matches){
+        touched=!touched;
+        if(!touched){focused=false;hovered=false;figure.blur();}
+        update();
+      }
     });
     figure.addEventListener('keydown',event=>{
       if(event.target!==figure)return;

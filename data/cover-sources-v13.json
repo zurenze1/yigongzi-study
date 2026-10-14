@@ -1,0 +1,50 @@
+{
+  "observed_on": "2026-10-14",
+  "purpose": "Small original-cover quotations identifying the four works discussed in this study; original production is not credited to this page author.",
+  "covers": [
+    {
+      "site_file": "images/project-1-v13.jpg",
+      "title": "重读李白，我好像明白了他为什么永远年轻，永远热泪盈眶",
+      "author": "意公子_",
+      "author_uid": 1929837001,
+      "original_link": "https://www.bilibili.com/video/BV1uj411D7hD/",
+      "source_metadata": "https://api.bilibili.com/x/web-interface/view?bvid=BV1uj411D7hD",
+      "source_field": "data.pic",
+      "sha256": "83060264731c1302e612c602972e5bee119d3af2cbfaec623bdca962c30be027",
+      "reuse_permission": "Public availability only; independent reuse permission not obtained."
+    },
+    {
+      "site_file": "images/project-2-v13.jpg",
+      "title": "人生的机遇，藏在认真里",
+      "author": "意公子_",
+      "author_uid": 1929837001,
+      "original_link": "https://www.bilibili.com/video/BV1CgSMBHEvv/",
+      "source_metadata": "https://api.bilibili.com/x/web-interface/view?bvid=BV1CgSMBHEvv",
+      "source_field": "data.pic",
+      "sha256": "7fe9e51545dc28bc2f79028a4f9338a39a6b4c0572b209504f3bc2be0d802013",
+      "reuse_permission": "Public availability only; independent reuse permission not obtained."
+    },
+    {
+      "site_file": "images/project-3-v13.jpg",
+      "title": "地球离了谁都还是照样转",
+      "author": "意公子_",
+      "author_uid": 1929837001,
+      "original_link": "https://www.bilibili.com/video/BV16e411P7C2/",
+      "source_metadata": "https://api.bilibili.com/x/web-interface/view?bvid=BV16e411P7C2",
+      "source_field": "data.pic",
+      "sha256": "0ad07e1c9bfed2c998a14db1fdda0ec2f27f88c12ba1969282206e12798bdec5",
+      "reuse_permission": "Public availability only; independent reuse permission not obtained."
+    },
+    {
+      "site_file": "images/project-4-v13.jpg",
+      "title": "总有一句话，是点亮你我的光",
+      "author": "意公子_",
+      "author_uid": 1929837001,
+      "original_link": "https://www.bilibili.com/video/BV1myVp6mE19/",
+      "source_metadata": "https://api.bilibili.com/x/web-interface/view?bvid=BV1myVp6mE19",
+      "source_field": "data.pic",
+      "sha256": "e135ca4412fde2f47803a7ab10e0f6cd7f23e696088625973619e8423d866580",
+      "reuse_permission": "Public availability only; independent reuse permission not obtained."
+    }
+  ]
+}
